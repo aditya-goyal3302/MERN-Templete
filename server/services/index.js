@@ -1,5 +1,4 @@
 module.exports = {
-  acl_service: require('./acl.service'),
   user_service: require("./user.service"),
   auth_service: require("./auth.service"),
   

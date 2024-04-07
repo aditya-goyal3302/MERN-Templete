@@ -1,17 +1,22 @@
 const express = require("express");
+const { acl_model } = require("../models");
 const router = express.Router();
 
 router.get("/", (req, res) => {
   res.send("you are in the root route of the server.");
 });
 
-router.use('/users', require('./users.routes'));
+router.use('/user', require('./users.routes'));
 router.use("/auth", require("./auth.routes"));
-
-// router.use("/comments", require("./comments.routes"));
-// router.use("/reactions", require("./reactions.routes"));
-// router.use("/connections", require("./connections.routes"));
-// router.use("/posts", require("./posts.routes"));
-// router.use('/chats', require('./chat.routes'));
+// router.use('',require('./.routes'))
+router.get("/acl", async (req,res)=>{
+  try {
+    const response = await acl_model.find({}, null, { select: 'title _id' })
+    res.status(200).send(response)
+  } catch (error) {
+    console.log('error: ', error);
+    res.status(500).send(error)
+  }
+});
 
 module.exports = router;

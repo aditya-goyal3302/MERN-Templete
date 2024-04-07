@@ -21,7 +21,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log("in auth.controller.js")
+  // console.log("in auth.controller.js")
   try {
     const{ email, password } = req.body;
     if (!email || !password || email === "" || password === "") {

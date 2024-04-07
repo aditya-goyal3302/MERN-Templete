@@ -30,7 +30,7 @@ const connectDB = async() => {
             console.log('Mongoose close!!!!');
         })
         
-        await mongoose.connect(`${process.env.DB_CONNECT}linked_in`);
+        await mongoose.connect(`${process.env.DB_CONNECT}sample`);
         
     } catch (err) {
         console.log(`Error_in_db: ${err.message}`);
