@@ -1,8 +1,8 @@
 const aclModel = require('./acl.model');
 
 module.exports = {
-    user_model: require('./user.model'),
-    acl_model : require('./acl.model'),
+    user_table: require('./user'),
+    // acl_table : require('./acl'),
     
     // post_model:require('./post.model'),
     // comments_model: require('./comments.model'),

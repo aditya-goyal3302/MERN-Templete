@@ -1,4 +1,5 @@
-module.exports={
-    auth_middleware:require('./auth.middleware'),
-    multer:require('./multer'),
+module.exports = {
+    auth_middleware: require('./auth-middleware.js'),
+    error_middleware: require('./error-middleware.js'),
+    multer: require('./multer.js')
 }
