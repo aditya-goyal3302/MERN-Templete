@@ -1,20 +1,4 @@
 module.exports = {
-    baseRepository: require("./baseRepository.js"),
-    userRepository: require("./userRepository.js"),
-    leaveDetailsRepository: require("./leaveDetailsRepository.js"),
-    policyRepository: require("./policyRepository.js"),
-    policyForRoleRepository: require("./policyForRoleRepository.js"),
-    policyLeaveRepository: require("./policyLeaveRepository.js"),
-    userBalanceRepository: require("./userBalanceRepository.js"),
-    userRoleRepository: require("./userRoleRepository.js"),
-    accrualRepository: require("./accrualRepository.js"),
-    leavesRepository: require("./leavesRepository.js"),
-    leaveTimelineRepository: require("./leaveTimelineRepository.js"),
-    authRepository: require("./authRepository.js"),
-    companyRepository: require("./companyRepository.js"),
-    warningRepository: require("./warningRepository.js"),
-    attendanceRepository: require("./attendanceRepository.js"),
-    calendarRecordsRepository: require("./calendarRecordsRepository.js"),
-    attachmentsRepository: require("./attachmentsRepository.js"),
-    notificationRepository: require("./notificationRepository.js"),
-};
+    base_repository: require("./baseRepository.js"),
+    user_repository: require("./userRepository.js"),
+}

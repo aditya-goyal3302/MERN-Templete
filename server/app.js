@@ -7,17 +7,18 @@ const cookieParser = require('cookie-parser');
 // const proxy = require('express-http-proxy');  //aws
 // const re = new RegExp(" ", "g");  //aws
 
-// const http = require("http");
+// const http = require("http");    //Socket connection
 const { multer: { upload }, error_middleware } = require("./middlewares");
-// const server = http.createServer(app);
+// const server = http.createServer(app);    //Socket connection
 
 // //Socket connection
-// const { socket } = require("./config").
-//   socket(server);
+// const { socket } = require("./config").    //Socket connection
+//   socket(server);    //Socket connection
 
 app.use(upload.fields([{ name: "link", maxCount: 4 }]));
 app.use(express.static("public"));
 app.use("/uploads/images", express.static("uploads/images"));
+
 //parsing
 app.use(cookieParser());
 app.use(express.json());
@@ -57,6 +58,6 @@ process.on('uncaughtException', (err) => {
   console.log('Uncaught exception:', err);
 });
 
-app.listen(process.env.PORT, () =>
+app.listen(process.env.PORT, () =>    //for Socket connection use server instead of app
   console.log(`Server Up and running on port ${process.env.PORT}`)
 );
