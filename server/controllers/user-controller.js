@@ -7,9 +7,19 @@ const { user_service } = require('../services')
 //         res.status(200).send(response)
 //     } catch (error) {
 //         console.log('error_controller_get_all_users: ', error);
-//         res.status(500).send(error)
+//         return next(error)
 //     }
 // }
+
+exports.register_user = async (req, res, next)=>{
+    try {
+        const response = await user_service.register_user(req.body)
+        res.status(201).send(response)
+    } catch (error) {
+        console.log('error_controller_register_user: ', error);
+        return next(error)
+    }
+}
 exports.get_user_details = async (req, res, next)=>{
     try {
         const response = await user_service.get_user_details(req)
@@ -17,7 +27,7 @@ exports.get_user_details = async (req, res, next)=>{
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_get_user_details: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }
 exports.set_user_inactive = async (req, res, next)=>{
@@ -27,17 +37,17 @@ exports.set_user_inactive = async (req, res, next)=>{
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_patch_user_details: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }
 exports.patch_user_details = async (req, res, next)=>{
     try {
-        const response = await user_service.patch_user_details(req)
+        const response = await user_service.patch_user_details(req.body)
         if (!response) return res.status(204)
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_patch_user_details: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }
 exports.set_user_active = async (req, res, next)=>{
@@ -47,7 +57,7 @@ exports.set_user_active = async (req, res, next)=>{
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_patch_user_details: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }
 exports.set_user_image = async (req, res, next)=>{
@@ -56,7 +66,7 @@ exports.set_user_image = async (req, res, next)=>{
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_set_user_image: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }
 exports.delete_user_image = async (req, res, next)=>{
@@ -65,6 +75,6 @@ exports.delete_user_image = async (req, res, next)=>{
         res.status(200).send(response)
     } catch (error) {
         console.log('error_controller_delete_user_image: ', error);
-        res.status(500).send(error)
+        return next(error)
     }
 }

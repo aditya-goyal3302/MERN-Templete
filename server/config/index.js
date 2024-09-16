@@ -1,4 +1,4 @@
 module.exports  = {
   socket: require("./socket"),
-  db: require("./db-connection"),
+  db_connection: require("./db-connection"),
 };

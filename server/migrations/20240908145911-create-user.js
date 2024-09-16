@@ -15,11 +15,11 @@ module.exports = {
       },
       role: {
         type: Sequelize.STRING,
-        allowNull: false
+        // allowNull: false
       },
       role_id: {
         type: Sequelize.STRING,
-        allowNull: false,
+        // allowNull: false,
         ref: "acl"
       },
       name: {

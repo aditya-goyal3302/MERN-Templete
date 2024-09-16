@@ -1,4 +1,4 @@
 module.exports = {
-    base_repository: require("./baseRepository.js"),
-    user_repository: require("./userRepository.js"),
+    base_repository: require("./base-repository.js"),
+    user_repository: require("./user-repository.js"),
 }

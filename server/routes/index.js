@@ -6,9 +6,10 @@ router.get("/", (req, res) => {
   res.send("you are in the root route of the server.");
 });
 
-router.use('/user', require('./users.routes'));
-router.use("/auth", require("./auth.routes"));
-// router.use('',require('./.routes'))
+router.use('/user', require('./users-routes'));
+router.use("/auth", require("./auth-routes"));
+// router.use('',require('./-routes'))
+// router.use('',require('./-routes'))
 router.get("/acl", async (req,res)=>{
   try {
     const response = await acl_model.find({}, null, { select: 'title _id' })

@@ -1,5 +1,6 @@
-const { sequelize } = require('../config/db_connection');
-const { badRequest } = require('../libs/error');
+const { Json } = require("sequelize/lib/utils");
+const { sequelize } = require("../config/db-connection");
+const { badRequest } = require("../libs/error");
 class BaseRepository {
   constructor({ model }) {
     this.model = model;
@@ -10,16 +11,13 @@ class BaseRepository {
     return instance && instance.toJSON();
   }
 
-  async count({ criteria, options }) {
+  async count({ criteria={}, options={} }) {
     return await this.model.count({ criteria, options });
   }
 
-  async getAll({ criteria, options }) {
-    return await this.model.findAll({ criteria, options });
-  }
-
   async update({ payload, criteria, options }) {
-    return await this.model.update(payload, { where: criteria, ...options });
+    const response = await this.model.update(payload, { where: criteria, ...options });
+    return JSON.parse(JSON.stringify(response));
   }
 
   findById(id) {
@@ -27,8 +25,8 @@ class BaseRepository {
   }
 
   async findOne({ criteria, include = [], attributes = {}, options = {} }) {
-    const res = await this.model.findOne({ where: criteria, include, attributes, ...options })
-    return res
+    const res = await this.model.findOne({ where: criteria, include, attributes, ...options });
+    return res;
   }
 
   async findAll({ criteria = {}, include = [], order, attributes = {}, offset = 0, paranoid = true, limit = null }) {
@@ -68,10 +66,9 @@ class BaseRepository {
 
   async getId(uuid) {
     const resp = await this.model.findOne({ where: { uuid } });
-    if (resp === null) throw new badRequest('Invalid Id');
+    if (resp === null) throw new badRequest("Invalid Element");
     return resp.toJSON().id;
   }
+}
 
-};
-
-module.exports = BaseRepository; 
+module.exports = BaseRepository;

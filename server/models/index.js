@@ -5,7 +5,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
-const { sequelize }= require('../config/db_connection');
+const { sequelize }= require('../config/db-connection');
 
 fs
   .readdirSync(__dirname)

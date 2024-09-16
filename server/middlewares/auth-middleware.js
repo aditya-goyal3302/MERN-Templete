@@ -1,4 +1,5 @@
-const {utils} = require('../libs')
+const {utils} = require('../libs');
+const { unauthorized, forbidden } = require('../libs/error');
 
 exports.verify_auth = async (req,res,next)=>{
     const token = req.headers.authorization
@@ -7,14 +8,14 @@ exports.verify_auth = async (req,res,next)=>{
         return res.status(401).send({ code:401 ,message: 'Unauthorized' });
       }
     try{
-        const decodetoken = utils.verifyToken(token)
+        const decodetoken = utils.verify_token(token)
         // console.log('decodetoken: ', decodetoken);
         req.body.user = decodetoken
         next();
     }   
     catch(err){
         console.log("err_in_auth_verify: ",err)
-        res.status(401).send({ code:401 ,message: 'Unauthorized' });
+        throw new unauthorized('Unauthorized')
     }
 }
 exports.checkpoint = async (req) => {
@@ -28,6 +29,6 @@ exports.checkpoint = async (req) => {
         return true
     }
     else{
-        return 403
+        throw new forbidden('Forbidden')
     }
 } 

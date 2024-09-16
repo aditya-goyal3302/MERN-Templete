@@ -47,6 +47,8 @@ app.use("/", require("./routes"));
 //   )
 // );      //aws
 
+app.use(error_middleware);
+
 //server
 app.use((req, res) => {
   res.status(404).send({ e: "404: Page not found" });
