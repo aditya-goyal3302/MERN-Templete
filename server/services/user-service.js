@@ -20,8 +20,7 @@ exports.patch_user_details = async ({
   const response = await user_repository.update({
     criteria: { id: user_id },
     payload: { name, phone_no, email, pincode, address, city, country, state, fax },
-    options: { returning: true,
-      plain: true },
+    options: { returning: true, plain: true },
   });
   const user = response[1];
   user.password = undefined;
@@ -30,35 +29,34 @@ exports.patch_user_details = async ({
 exports.set_user_inactive = async req => {
   const { user } = req.body;
   const { user_id } = user;
-  const response = await user_repository.findOneAndUpdate(
-    { id: user_id },
-    { status: "inactive" },
-    { upsert: false, new: true }
-  );
+  const response = await user_repository.update({
+    criteria: { id: user_id },
+    payload: { status: "inactive" },
+    options: { returning: true, plain: true },
+  });
   response.password = undefined;
   return response;
 };
 exports.set_user_active = async req => {
   const { user } = req.body;
   const { user_id } = user;
-  const response = await user_repository.findOneAndUpdate(
-    { id: user_id },
-    { status: "active" },
-    { upsert: false, new: true }
-  );
+  const response = await user_repository.update({
+    criteria: { id: user_id },
+    payload: { status: "active" },
+    options: { returning: true, plain: true },
+  });
   response.password = undefined;
   return response;
 };
 
 exports.set_user_image = async req => {
   const { user_id } = req.body.user;
-  const { image } = req.body;
-  console.log("image: ", image);
-  const resp = await user_repository.updateOne({ id: user_id }, { image });
+  const { image } = req.files;
+  const resp = await user_repository.update({ criteria: { id: user_id }, payload: { image: image[0].path } });
   return resp;
 };
 exports.delete_user_image = async req => {
   const { user_id } = req.body.user;
-  const resp = await user_repository.updateOne({ id: user_id }, { image: "" });
+  const resp = await user_repository.update({ criteria: { id: user_id }, payload: { image: "" } });
   return resp;
 };
