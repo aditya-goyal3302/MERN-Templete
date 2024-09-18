@@ -13,14 +13,10 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         allowNull: false
       },
-      role: {
-        type: Sequelize.STRING,
-        // allowNull: false
-      },
       role_id: {
-        type: Sequelize.STRING,
-        // allowNull: false,
-        ref: "acl"
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        ref: "acls"
       },
       name: {
         type: Sequelize.STRING,

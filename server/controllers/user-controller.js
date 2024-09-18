@@ -1,28 +1,19 @@
 const { user_service } = require('../services')
 
-// exports.get_all_user_for_admin = async (req, res, next)=>{
-//     try {
-//         const response = await user_service.get_all_user_for_admin(req)
-//         if (response.length === 0) return res.status(204)
-//         res.status(200).send(response)
-//     } catch (error) {
-//         console.log('error_controller_get_all_users: ', error);
-//         return next(error)
-//     }
-// }
-
-exports.register_user = async (req, res, next)=>{
+exports.get_all_user_for_admin = async (req, res, next)=>{
     try {
-        const response = await user_service.register_user(req.body)
-        res.status(201).send(response)
+        const response = await user_service.get_all_user_for_admin(req)
+        if (response.length === 0) return res.status(204)
+        res.status(200).send(response)
     } catch (error) {
-        console.log('error_controller_register_user: ', error);
+        console.log('error_controller_get_all_users: ', error);
         return next(error)
     }
 }
+
 exports.get_user_details = async (req, res, next)=>{
     try {
-        const response = await user_service.get_user_details(req)
+        const response = await user_service.get_user_data(req)
         if (!response) return res.status(204)
         res.status(200).send(response)
     } catch (error) {

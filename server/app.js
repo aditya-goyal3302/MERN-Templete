@@ -9,11 +9,11 @@ const cookieParser = require('cookie-parser');
 
 // const http = require("http");    //Socket connection
 const { multer: { upload }, error_middleware } = require("./middlewares");
-// const server = http.createServer(app);    //Socket connection
+// const server = http.createServer(app);     /Socket connection
 
 // //Socket connection
 // const { socket } = require("./config").    //Socket connection
-//   socket(server);    //Socket connection
+//   socket(server);    //Socket connection+-
 
 app.use(upload.fields([{ name: "link", maxCount: 4 }, { name: "image", maxCount: 1 }]));
 app.use(express.static("public"));
@@ -55,7 +55,6 @@ app.use((req, res) => {
 });
 
 //error handling
-app.use(error_middleware);
 process.on('uncaughtException', (err) => {
   console.log('Uncaught exception:', err);
 });

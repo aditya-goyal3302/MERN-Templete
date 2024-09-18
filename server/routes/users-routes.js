@@ -9,11 +9,11 @@ router
     .patch('/image',user_controller.set_user_image)
     .delete('/image',user_controller.delete_user_image)
     
-    // .use((req, res, next) => { req.access_required = 3; next(); })
-    // .put('/:user_id', auth_middleware.verify_user_access, user_controller.set_user_active) // to set status active of users
-    // .get('/users', auth_middleware.verify_user_access, user_controller.get_all_user_for_admin)  //admin access to fetch all users
+    .use((req, res, next) => { req.access_required = 3; next(); })
+    .put('/:user_id', auth_middleware.checkpoint, user_controller.set_user_active) // to set status active of users
+    .get('/users', auth_middleware.checkpoint, user_controller.get_all_user_for_admin)  //admin access to fetch all users
 
-    // .use( (req, res, next) => { req.access_required = 1; next(); }, auth_middleware.verify_user_access)
-    // .delete('/', user_controller.set_user_inactive)   // to set status inactive of users
+    .use( (req, res, next) => { req.access_required = 1; next(); }, auth_middleware.checkpoint)
+    .delete('/', user_controller.set_user_inactive)   // to set status inactive of users
 
 module.exports = router;

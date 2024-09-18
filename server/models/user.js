@@ -7,8 +7,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.belongsTo(models.Acl, {
         foreignKey: "role_id",
-        as: "role_details",
+        as: "role_data",
       });
+      models.Acl.hasMany(User, {
+        foreignKey: "role_id",
+        as: "users",
+      });
+    }
+    toJSON() {
+      return this.get();
     }
   }
   User.init(
@@ -23,14 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
-      role: {
-        type: DataTypes.STRING,
-        // allowNull: false
-      },
       role_id: {
-        type: DataTypes.STRING,
-        // allowNull: false,
-        ref: "acl",
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        ref: "acls",
       },
       name: {
         type: DataTypes.STRING,
