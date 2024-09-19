@@ -6,7 +6,7 @@ module.exports = {
     queryInterface.bulkInsert('Acls', [
       {
         uuid: '123e4567-e89b-12d3-a456-426614174000',
-        title: 'Admin',
+        title: 'other_user',
         access: [1, 4, 6, 7],
         created_at: new Date(),
         updated_at: new Date()
@@ -20,7 +20,7 @@ module.exports = {
       },
       {
         uuid: '123e4567-e89b-12d3-a456-426614174002',
-        title: 'other_user',
+        title: 'Admin',
         access: [3, 5, 6, 7],
         created_at: new Date(),
         updated_at: new Date()
