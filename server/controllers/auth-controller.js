@@ -21,6 +21,16 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.verify_login = async (req, res, next) => {
+  try {
+    const result = await auth_service.verify_login(req.body);
+    res.status(SUCCESS).send(result);
+  } catch (error) {
+    console.log("error_in_verify_login: ", error);
+    return next(error);
+  }
+}
+
 exports.forgot_password = async (req, res, next) => {
   try {
     const result = await auth_service.forgot_password(req.body);

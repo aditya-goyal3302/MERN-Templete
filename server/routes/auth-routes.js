@@ -4,6 +4,7 @@ const { auth_middleware } = require("../middlewares");
 
 router.post("/signup", auth_controller.signup);
 router.post("/login", auth_controller.login);
+router.post("/login/verify", auth_controller.verify_login);
 
 router.post("/forgot-password", auth_controller.forgot_password);
 router.get("/reset-password/:token", auth_controller.verify_reset_token);
