@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  lms:
+    container_name: lms-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.dev
+    restart: always
+    networks:
+      - lms_shared_network
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+networks:
+  lms_shared_network:
+    external: true
