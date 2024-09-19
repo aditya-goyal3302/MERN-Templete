@@ -4,7 +4,7 @@ const { bad_request } = require('../libs/error.js');
 ;
 
 const transporter = nodemailer.createTransport(mail_config);
-exports.mail_reset_link = async function ({ to, subject, url }) {
+exports.mail_reset_link = async function ({ to, subject, url, name }) {
     // eslint-disable-next-line snakecasejs/snakecasejs
     if (!to) throw new bad_request("Receiver email must be present");
     if (!subject) throw new bad_request("Email subject must be present");
@@ -12,8 +12,8 @@ exports.mail_reset_link = async function ({ to, subject, url }) {
 
     const html = `
     <div>
-        <p>Hi there,</p>
-        <p>yYour reset password link is here: ${url}</p>
+        <p>Hi ${name},</p>
+        <p>Your reset password link is here: <a href="${url}"> click here </a></p>
         <p>Thanks</p>
     </div>
     `

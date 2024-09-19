@@ -62,11 +62,14 @@ exports.forgot_password = async ({ email }) => {
       },
       options: { transaction },
     })
+    console.log(new Date(Date.now() + 1000 * 60 * 60 * 2), "fsadgdfdmdajhfuydsfudbfda", new Date(Date.now()));
     const token = verification_log.uuid;
+    const client = process.env.CLIENT_URL
     await mail_service.mail_reset_link({
       to: user.email,
       subject: "Reset Password Link",
-      url: `${process.nextTick.CLIENT_URL.split(", ")[0]}/reset_password/${token}`,
+      url: `${client}/reset_password/${token}`,
+      name: user.name
     })
     return { message: "Reset Password Link Sent Successfully" };
   });
@@ -77,11 +80,12 @@ exports.verify_reset_token = async ({ token }) => {
     if (!token) throw new bad_request("Token Required");
 
     const verification_log = await verification_logs_repository.findOne({
-      criteria: { uuid: token, expires_at: { $gt: new Date() } },
+      criteria: { uuid: token },
       options: { transaction },
       include: [{ model: User, as: "user_details" }]
     })
-    if (!verification_log.length) throw new bad_request("Token Expired or Invalid!");
+    if (!verification_log) throw new bad_request("Token Invalid!");
+    if (verification_log.expires_at < new Date()) throw new bad_request("Token Expired!");
     const user = verification_log.user_details;
     if (!user) throw new bad_request("User Not Found!");
     if (user.status !== "active") throw new bad_request("User is not found!");
@@ -94,43 +98,50 @@ exports.verify_reset_token = async ({ token }) => {
   });
 }
 
-exports.reset_password = async ({ token, password }) => {
-  return await user_repository.handleManagedTransaction(async transaction => {
+exports.reset_password = async ({ password }, { token }) => {
+  const resp = await user_repository.handleManagedTransaction(async transaction => {
     if (!token) throw new bad_request("Token Required");
     if (!password) throw new bad_request("Password Required");
     const verification_log = await verification_logs_repository.findOne({
-      criteria: { uuid: token, expires_at: { $gt: new Date() } },
+      criteria: { uuid: token },
       options: { transaction },
       include: [{ model: User, as: "user_details" }]
-    });
-    if (!verification_log) throw new bad_request("Token Expired or Invalid!");
+    })
+    if (!verification_log) throw new bad_request("Token Invalid!");
+    if (verification_log.expires_at < new Date()) throw new bad_request("Token Expired!");
     const user = verification_log.user_details;
 
     if (!user) throw new bad_request("User Not Found!");
     if (user.status !== "active") throw new bad_request("User is not found!");
 
-    return await user_repository.update({
-      criteria: { uuid: user_id },
-      payload: { password },
+    const new_user = await user_repository.findOne({
+      criteria: { uuid: user_data.uuid },
       options: { transaction },
     });
+    new_user.password = new_password;
+    await new_user.save({ transaction });
+    return user
   });
+  return await gen_response_with_token(resp);
 }
 
 exports.change_password = async ({ user, old_password, new_password }) => {
-  return await user_repository.handleManagedTransaction(async transaction => {
+  const resp = await user_repository.handleManagedTransaction(async transaction => {
     if (!old_password) throw new bad_request("Old Password Required");
     if (!new_password) throw new bad_request("New Password Required");
 
-    const user = await user_repository.find_and_compare_password({
+    const user_data = await user_repository.find_and_compare_password({
       criteria: { email: user.email, password: old_password },
       options: { transaction },
     });
-    if (!user) throw new bad_request("Invalid User or Incorrect Old Password ")
-    return await user_repository.update({
-      criteria: { uuid: user.uuid },
-      payload: { password: new_password },
+    if (!user_data) throw new bad_request("Incorrect Old Password ")
+    const new_user = await user_repository.findOne({
+      criteria: { uuid: user_data.uuid },
       options: { transaction },
     });
+    new_user.password = new_password;
+    await new_user.save({ transaction });
+    return user_data;
   });
+  return await gen_response_with_token(resp);
 }

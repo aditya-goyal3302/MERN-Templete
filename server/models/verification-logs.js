@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'VerificationLogs',
         tableName: 'Verification_logs',
+        updatedAt: false,
     });
     return VerificationLogs;
 };

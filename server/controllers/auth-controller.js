@@ -33,7 +33,7 @@ exports.forgot_password = async (req, res, next) => {
 
 exports.reset_password = async (req, res, next) => {
   try {
-    const result = await auth_service.reset_password(req.body);
+    const result = await auth_service.reset_password(req.body, req.params);
     res.status(SUCCESS).send(result);
   } catch (error) {
     console.log("error_in_reset_password: ", error);
@@ -43,7 +43,7 @@ exports.reset_password = async (req, res, next) => {
 
 exports.verify_reset_token = async (req, res, next) => {
   try {
-    const result = await auth_service.verify_reset_token(req.body);
+    const result = await auth_service.verify_reset_token(req.params);
     res.status(SUCCESS).send(result);
   } catch (error) {
     console.log("error_in_verify_token: ", error);
