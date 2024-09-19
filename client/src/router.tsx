@@ -7,13 +7,15 @@ import UserSettings from "./pages/UserSettings";
 import useNetworkStatus from "./hooks/useNetworkStatus";
 import Error from "./pages/Error";
 import Maintaince from "./pages/Error/Maintaince";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 
 function Route(isLogined: true | false, role: string) {
   const isOnline = useNetworkStatus();
   const routes: RouteObject[] = [
     {
       path: "auth",
-      element: isLogined ? <Navigate to={"/dashboard"} /> : <BaseLayout />,
+      element: isLogined ? <Navigate to={"/"} /> : <BaseLayout />,
       children: [
         {
           path: "login",
@@ -23,6 +25,14 @@ function Route(isLogined: true | false, role: string) {
           path: "signup",
           element: <Signup />,
         },
+        {
+          path: "forgot-password",
+          element: <ForgotPassword />,
+        },
+        {
+          path: "reset-password/:token",
+          element: <ResetPassword />,
+        }
       ],
     },
     {
@@ -31,7 +41,7 @@ function Route(isLogined: true | false, role: string) {
       children: [
         {
           path: "/",
-          element: <Navigate to="/dashboard" />,
+          
         },
         {
           path: "setting",
@@ -39,25 +49,25 @@ function Route(isLogined: true | false, role: string) {
         },
       ],
     },
-    {
-      path: "/",
-      element: isLogined && role === "Admin" ? <SidebarLayout /> : <Navigate to="/auth/login" />,
-      children: [
-        {
-          path: "admin",
-          children: [
+    // {
+    //   path: "/",
+    //   element: isLogined && role === "Admin" ? <SidebarLayout /> : <Navigate to="/auth/login" />,
+    //   children: [
+    //     {
+    //       path: "admin",
+    //       children: [
 
-            ],
-        },
-      ],
-    },
+    //         ],
+    //     },
+    //   ],
+    // },
     {
       path: "*",
-      element: <Error />,
+      element: <BaseLayout children={<Error />}/>,
     },
     {
       path: "/Maintaince",
-      element: <Maintaince />,
+      element: <BaseLayout children={<Maintaince />}/>,
     },
   ];
   if (!isOnline) {

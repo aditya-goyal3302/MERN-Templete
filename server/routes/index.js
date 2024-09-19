@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
 
 router.use('/user', require('./users-routes'));
 router.use("/auth", require("./auth-routes"));
+router.use('/role',require('./role-routes'))
 // router.use('',require('./-routes'))
 // router.use('',require('./-routes'))
 router.get("/acl", async (req,res)=>{

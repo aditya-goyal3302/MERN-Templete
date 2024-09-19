@@ -30,12 +30,12 @@ class BaseRepository {
   }
 
   async findAll({ criteria = {}, include = [], order="DESC", attributes = {}, offset = 0, paranoid = true, limit = null }) {
-    let findQuery = { where: criteria, include, attributes, offset, order, paranoid, subQuery: false };
+    let findQuery = { where: criteria, include, attributes, offset, order, paranoid };
     if (limit) findQuery.limit = limit;
     return await this.model.findAll(findQuery);
   }
 
-  async findAndCountAll({ criteria, include = [], order, attributes = {}, offset = 0, limit = 10 }) {
+  async findAndCountAll({ criteria={}, include = [], order, attributes = {}, offset = 0, limit = 10 }) {
     return await this.model.findAndCountAll({ where: criteria, include, attributes, offset, order, limit });
   }
 

@@ -1,21 +1,20 @@
 
-import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment } from '@mui/material'
+import { Box, Button, FormGroup, FormHelperText, FormLabel, InputBase, Typography, IconButton, InputAdornment, Stack } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import styles from './Login.module.css'
-import loginPng from '../../assets/Images/login.png'
 import { Link } from 'react-router-dom'
-import { LoginApi } from '../../features/user/user.action'
+import { LoginApi, VerifyLoginApi } from '../../features/user/user.action'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { RootState } from '../../store/store'
 import { reset } from '../../features/user/user.slice'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { ArrowBack, Visibility, VisibilityOff } from '@mui/icons-material'
 import { detectBrowser } from '../../libs/commonFxn'
 import { useNotification } from '../../hooks/useNotification'
 
 type Data = {
   email: string
   password: string
-  rememberMe: true | false
+  OTP: string
 }
 
 const Login = () => {
@@ -24,14 +23,16 @@ const Login = () => {
   const initStage = {
     email: "",
     password: '',
-    rememberMe: false
+    OTP: ''
   }
   const state = useAppSelector((state: RootState) => state.persistedReducer)
   const [data, setData] = useState<Data>(initStage)
   const [error, setError] = useState({
     email: false,
     password: false,
+    OTP: false
   });
+  const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const browser = detectBrowser();
   useEffect(() => {
@@ -43,6 +44,7 @@ const Login = () => {
       setError({
         email: true,
         password: true,
+        OTP: true
       })
   }, [state.error])
 
@@ -55,40 +57,41 @@ const Login = () => {
     setError({
       email: false,
       password: false,
+      OTP: false
     });
-  
+
     if (data.email === "" || data.password === "") {
       // Set errors if fields are empty
       setError((prev) => ({
+        ...prev,
         email: data.email === "",
         password: data.password === "",
       }));
       return;
     }
-  
+
     try {
       const res: any = await dispatch(LoginApi({ email: data.email, password: data.password }));
       if (res?.meta?.requestStatus === "fulfilled") {
-        showNotification("Login successfully", "success");
+        // showNotification("Login successfully", "success");
+        setStep(2);
       }
       if (res?.meta?.requestStatus === "rejected") {
         // Display error message for invalid login
         showNotification(res?.payload?.response?.data || "Error", "error");
-  
+
         // Based on the response, set appropriate errors
         if (res?.payload?.response?.data) {
-          setError((prev) => ({...prev, email: false,password: false }));
+          setError((prev) => ({ ...prev, email: false, password: false }));
         }
-        // if (res?.payload?.response?.data.includes("Incorrect password")) {
-        //   setError((prev) => ({...prev, email: false,password: true }));
-        // }
+
       }
     } catch (error) {
       showNotification("Error", "error");
       console.log('error: ', error);
     }
   };
-  
+
   const validateEmail = (email: string) => {
     return String(email)
       .toLowerCase()
@@ -101,17 +104,6 @@ const Login = () => {
     return String(password).match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/);
   };
 
-  // function check_email(data: string) {
-  //   if (data === "" || !validateEmail(data))
-  //     setError((pre) => ({ ...pre, email: true }));
-  //   else setError((pre) => ({ ...pre, email: false }));
-  // }
-
-  // function check_password(data: string) {
-  //   if (data === "" || !validatePassword(data) || data.length < 6)
-  //     setError((pre) => ({ ...pre, password: true }));
-  //   else setError((pre) => ({ ...pre, password: false }));
-  // }
   function check_password(data: string) {
     const isValid = data !== "" && validatePassword(data) && data.length >= 6;
     setError((pre) => ({ ...pre, password: !isValid }));
@@ -128,14 +120,43 @@ const Login = () => {
     }
   }
 
+  const HandleVerifyOtp = async () => {
+    setError({
+      email: false,
+      password: false,
+      OTP: false
+    });
+    if (data.OTP === "") {
+      // Set errors if fields are empty
+      setError((prev) => ({
+        ...prev,
+        OTP: data.OTP === "",
+      }));
+      return;
+    }
+    try {
+      const res: any = await dispatch(VerifyLoginApi({ email: data.email, otp: data.OTP }));
+      if (res?.meta?.requestStatus === "fulfilled") {
+        showNotification("Login successfully", "success");
+      }
+      if (res?.meta?.requestStatus === "rejected") {
+        // Display error message for invalid login
+        showNotification(res?.payload?.response?.data || "Error", "error");
+
+        // Based on the response, set appropriate errors
+        if (res?.payload?.response?.data) setError((prev) => ({ ...prev, OTP: false }));
+      }
+    } catch (error) {
+      showNotification("Error", "error");
+      console.log('error: ', error);
+    }
+  }
+
 
   return (
     <Box className={styles.root}>
-      <Box className={styles.partition1}>
-        <img src={loginPng} alt='' className={styles.loginImg} />
-      </Box>
-      <Box className={styles.partition2}>
-        <Typography className={styles.title}> Sign In</Typography>
+      {step === 1 && <Box className={styles.partition2}>
+        <Typography className={styles.title}>Sign In</Typography>
 
         <FormGroup className={styles.inputWraper}>
           <FormLabel className={styles.inputlabel}>Email*</FormLabel>
@@ -187,10 +208,42 @@ const Login = () => {
           {error.password ? <FormHelperText className={styles.FormHelperText}>{data.password === "" ? "Password is required" : "Invalid Password"}</FormHelperText> : null}
         </FormGroup>
         <Box className={styles.rememberMeWrap}>
+          <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}><Link to='/auth/forgot-password'> Forgot Password?</Link></Typography>
           <Typography className={`${styles.rememberMeText} ${styles.loginRedirect}`}>New User? <Link to='/auth/signup'> Signup here</Link></Typography>
         </Box>
         <Button className={styles.signInBtn} onClick={HandleLogin} disabled={(data.email.length === 0 || data.password.length === 0 || state.isLoading === true || (state.token !== ''))}> Sign In</Button>
+      </Box>}
+      {step === 2 && <Box className={styles.partition2}>
+        <Typography className={styles.title}>Verify using OTP</Typography>
+        <Stack direction={"row"} gap={2} alignItems={"center"} mb={2}>
+          <IconButton onClick={() => setStep(1)}><ArrowBack /></IconButton>
+          <Typography className={styles.email}>{data.email}</Typography>
+        </Stack>
+        <FormGroup className={styles.inputWraper}>
+          <FormLabel className={styles.inputlabel}>OTP*</FormLabel>
+          <InputBase
+            type='number'
+            className={`${styles.inputBox} ${error.email ? styles.errorInput : ''}`}
+            value={data?.OTP}
+            onKeyDown={(e) => {
+              if (e.key === ' ') {
+                e.preventDefault();
+              }
+            }}
+            onChange={(e) => {
+              const value = e.target.value.length > 6 ? data.OTP : e.target.value;
+              setData((pre) => ({ ...pre, OTP: value }));
+            }}
+            inputProps={{
+              maxLength: 6,
+              title: 'No spaces allowed. Only numbers are allowed.', // Tooltip for input rules
+            }}
+          />
+          {error.OTP ? <FormHelperText className={styles.FormHelperText}>{data.OTP === "" ? "OTP is required" : "Invalid OTP"}</FormHelperText> : null}
+        </FormGroup>
+        <Button className={styles.signInBtn} onClick={HandleVerifyOtp} disabled={(!data.OTP || state.isLoading || (state.token !== ''))}> Verify OTP</Button>
       </Box>
+      }
     </Box>
   )
 }

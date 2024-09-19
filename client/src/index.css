@@ -28,3 +28,8 @@ input[type=number]::-webkit-outer-spin-button {
     -moz-appearance: none !important;
     appearance: none !important; 
 }
+
+#root{
+  height: 100dvh;
+  width: 100svw;
+}

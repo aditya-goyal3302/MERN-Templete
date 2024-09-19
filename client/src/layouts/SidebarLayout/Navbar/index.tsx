@@ -1,9 +1,7 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import calenderSvg from '../../../assets/Images/Calendar.png';
-import logo from '../../../assets/Images/logo.png';
 import {  useAppSelector } from '../../../hooks';
 import { RootState } from '../../../store/store';
 import styles from './SidePanelNavbar.module.css';
@@ -33,8 +31,8 @@ const SidePanelNavbar = (props: propsType) => {
                 <IconButton onClick={() => setOpenDrawer(!openDrawer)} sx={{ p: 1.5, mr: 2 }}>
                     <MenuIcon />
                 </IconButton>
-                <img height={40} width={40} src={logo} alt="logo" className={styles.logo} /> &nbsp;
-                LMS
+                {/* <img height={40} width={40} src={logo} alt="logo" className={styles.logo} /> &nbsp; */}
+                App 
             </Box>
             <Box className={styles.right}>
                 <Box className={styles.dateBox}>
@@ -50,10 +48,10 @@ const SidePanelNavbar = (props: propsType) => {
                 </Box>
                 <Box className={styles.profileBox}>
                     <Box className={styles.profileTextBox}>
-                        <Typography className={styles.userName}>{user?.name}</Typography>
-                        <Typography className={styles.userTitle}>{user?.User_role?.role_type}</Typography>
+                        <Typography className={styles.userName}>{user.name}</Typography>
+                        <Typography className={styles.userTitle}>{user.role_data.title}</Typography>
                     </Box>
-                    <Avatar className={styles.userAvatar} src={''} onClick={(event: any) => { handleClickAvatar(event) }} />
+                    <Avatar className={styles.userAvatar} src={user.image?`${process.env.REACT_APP_BACKEND_URL}/${user.image}`:""} onClick={(event: any) => { handleClickAvatar(event) }} />
                 </Box>
             </Box>
         </Box>

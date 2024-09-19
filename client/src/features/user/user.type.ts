@@ -3,34 +3,30 @@ export type loginApiPayload = {
   password: string,
 }
 
+export type loginVerifyApiPayload = {
+  email: string,
+  otp: string,
+}
+
 export type InitUser = {
   uuid: string,
   name: string,
-  last_name: string,
-  role: string,
   email: string,
-  department: string,
-  company_id: string,
-  is_valid: string,
+  status: string,
   username: string,
-  joins_at: string,
   pincode: number,
   state: string,
   city: string,
   street: string,
-  date_of_birth: string,
   country: string,
-  phone: string,
+  image: string,
+  phone_no: string,
   created_at: string,
   updated_at: string,
   deleted_at: string,
-  User_role: {
+  role_data: {
     uuid: string,
-    role_type: string,
-  },
-  Company_detail: {
-    uuid: string,
-    name: string,
+    title: string,
   }
 }
 
@@ -38,7 +34,7 @@ export type loginApiResponse = {
   response: {
     status: number
   }
-  user: InitUser
+  data: InitUser
   token: string
 }
 export type initialState = {

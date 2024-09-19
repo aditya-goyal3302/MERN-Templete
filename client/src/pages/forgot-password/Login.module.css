@@ -1,12 +1,12 @@
-.root {
+.root{
     position: relative !important;
     background-color: #fff !important;
     border-radius: 12px !important;
     min-height: 400px !important;
     width: 550px !important;
-    transform: translate(-50%, -50%) !important;
+    transform: translate(-50%,-50%) !important;
     top: 50% !important;
-    left: 50% !important;
+    left:50% !important;
     display: flex !important;
     flex-direction: row !important;
     align-items: start !important;
@@ -15,40 +15,35 @@
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.15) !important;
 }
 
-.partition2 {
+.partition2{
     width: 100% !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-
+    
 }
-
-.title {
+.title{
     font-size: 32px !important;
     font-weight: 900 !important;
     line-height: 32px !important;
-    margin-bottom: 32px !important;
 }
-
-.email {
+.email{
     font-size: 18px !important;
     font-weight: 600 !important;
     line-height: 24px !important;
 }
 
-.inputWraper {
+.inputWraper{
     margin-bottom: 20px !important;
 }
-
-.inputlabel {
-    font-weight: 600 !important;
+.inputlabel{
+    font-weight: 600 !important; 
     line-height: 24px !important;
     margin-bottom: 5px !important;
     font-size: 16px !important;
 }
-
-.inputBox {
-    border: 1px solid rgba(140, 140, 140, 0.2);
+.inputBox{
+    border:1px solid rgba(140, 140, 140, 0.2);
     border-radius: 12px !important;
     width: 100% !important;
     padding: 10px 20px 10px 20px;
@@ -57,86 +52,54 @@
     background-color: #f9fafb !important;
     height: 48px !important;
 
-    & fieldset {
-        border: none !important;
-    }
 }
-
-.errorInput {
+.errorInput{
     border-color: red;
 }
-
-.FormHelperText {
+.FormHelperText{
     color: red !important;
 }
-
-.tncWrap {
+.rememberMeWrap{
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
-    justify-content: flex-start !important;
-    margin-bottom: 10px !important;
+    justify-content: space-between !important;
     width: 100% !important;
 }
-
-.tncText {
+.rememberMeText{
     font-size: 12px !important;
-    margin-left: 5px !important;
     font-weight: 400 !important;
-
-    & a {
-        text-decoration: unset !important;
-        color: #1c64f2 !important;
-        font-weight: 600;
-    }
 }
-
-.signInBtn {
+.signInBtn{
     /* border:1px solid rgba(140, 140, 140, 0.2); */
     border-radius: 12px !important;
     width: 100% !important;
     padding: 10px !important;
     font-size: 16px !important;
     line-height: 20px !important;
-    color: white !important;
-    background-color: #1c64f2 !important;
-    margin-top: 10px !important;
     text-transform: unset !important;
+    color:white !important;
+    background-color: #1c64f2 !important;
+    margin-top: 20px !important;
 }
-
-.signInBtn:disabled {
+.signInBtn:disabled{
     background-color: #1c64f299 !important;
 
 }
-
-.prevBtn {
-    width: 100% !important;
-    color: black !important;
-    background-color: white !important;
-    border: 1px solid rgba(140, 140, 140, 0.8) !important
-}
-
-.btnsWrap {
-    max-width: 100% !important;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-
-.loginLinkBtn {
-    color: rgb(0, 136, 255) !important;
-    text-decoration: none !important;
-}
-
-.loginRedirect {
-    margin-left: auto !important;
-}
-
-@media only screen and (max-width: 1000px) {
-
-    .inputBox,
-    .btnsWrap {
-        width: 100% !important;
-        max-width: 100% !important;
+.loginRedirect{
+    & a{
+        text-decoration: unset !important;
+        color: #1c64f2 !important;
+        font-weight: 600;
     }
 }
+.passwordWrapper {
+    display: flex;
+    align-items: center;
+  }
+  
+  .viewPasswordIcon {
+    padding: 0;
+    margin-left: -30px;
+  }
+  

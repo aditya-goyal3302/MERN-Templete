@@ -37,8 +37,8 @@
 }
 
 .avatar {
-    height: 100px !important;
-    width: 100px !important;
+    height: 80px !important;
+    width: 80px !important;
 }
 
 .profileTextWrap {
@@ -62,11 +62,11 @@
 }
 
 .btns {
-    /* margin-left: 15px !important; */
-    /* margin-top: auto !important; */
+    margin-left: 15px !important;
+    margin-top: auto !important;
     margin-left: 28px;
     display: flex !important;
-    /* flex-direction: column !important; */
+    flex-direction: column !important;
     gap: 16px !important;
 }
 

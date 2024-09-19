@@ -17,7 +17,8 @@ const BaseLayout = ({ children }: BaseLayoutProps) => {
       className={styles.BaseLayoutRoot}
       sx={{
         flex: 1,
-        height: '100%',
+        minHeight: '100svh',
+        maxHeight: '100svh',
       }}
     >
       {/* <Box className={styles.navbar}>

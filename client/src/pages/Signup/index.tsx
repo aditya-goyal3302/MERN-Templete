@@ -1,18 +1,18 @@
-import { Box, Button, FormGroup, FormLabel, InputBase, Typography, FormHelperText, InputAdornment, IconButton, FormControlLabel, Checkbox } from '@mui/material'
-import React, { useState } from 'react'
+import { Box, Button, FormGroup, FormLabel, InputBase, Typography, FormHelperText, InputAdornment, IconButton, FormControlLabel, Checkbox, Select, MenuItem } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import styles from './Signup.module.css'
-import signup from '../../assets/Images/signup.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks'
 import { signupUserData } from '../../features/user/user.action'
 import { detectBrowser } from '../../libs/commonFxn';
 import { useNotification } from '../../hooks/useNotification';
+import axiosInstance from '../../config/axios';
 
 
 type Data = {
   name: string
-  last_name: string
+  role_id: string
   email: string
   password: string
   confirmPassword: string,
@@ -30,7 +30,7 @@ const Signup: React.FC = () => {
     password: false,
     confirmPassword: false,
     name: false,
-    last_name: false,
+    role_id: false,
     username: false,
     tnc: false,
     conflict: false,
@@ -40,19 +40,31 @@ const Signup: React.FC = () => {
       password: false,
       confirmPassword: false,
       name: false,
-      last_name: false,
+      role_id: false,
       username: false,
     }
   };
 
-  // const initError = { email: false, password: false, show_password: false, confirmPassword: false, name: false, role: false, conflict: false, username: false, last_name: false, badRequest: "" }
   const [error, setError] = useState(initError);
-  const initStage = { name: '', last_name: '', email: "", confirmPassword: '', password: "", username: "", tnc: false }
+  const initStage = { name: '', role_id: '', email: "", confirmPassword: '', password: "", username: "", tnc: false }
   const [data, setData] = useState<Data>(initStage)
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const browser = detectBrowser();
+  const [roles, setRoles] = useState<{ title: string; uuid: string }[]>([])
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axiosInstance.get('/role');
+        setRoles(response.data);
+      } catch (error: any) {
+        console.log('error: ', error);
+      }
+    }
+    fetchRoles();
+  }, [])
 
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -92,43 +104,11 @@ const Signup: React.FC = () => {
     return /^[A-Za-z]{1,50}$/.test(name);
   };
 
-  // function check_name(data: string) {
-  //   if (data === "" || !validateName(data))
-  //     setError((pre) => ({ ...pre, name: true }));
-  //   else setError((pre) => ({ ...pre, name: false }));
-  // }
-
-  // function check_lastName(data: string) {
-  //   if (data === "" || !validateName(data))
-  //     setError((pre) => ({ ...pre, last_name: true }));
-  //   else setError((pre) => ({ ...pre, last_name: false }));
-  // }
-
-  // function check_email(data: string) {
-  //   if (data === "" || !validateEmail(data))
-  //     setError((pre) => ({ ...pre, email: true }));
-  //   else setError((pre) => ({ ...pre, email: false }));
-  // }
-
-  // function check_password(data: string) {
-  //   if (data === "" || !validatePassword(data) || data.length < 6)
-  //     setError((pre) => ({ ...pre, password: true }));
-  //   else setError((pre) => ({ ...pre, password: false }));
-  // }
-
   function check_name(data: string) {
-    if (data === "" || !validateName(data)) {
+    if (data === "" ) {
       setError(pre => ({ ...pre, name: true, required: { ...pre.required, name: true } }));
     } else {
       setError(pre => ({ ...pre, name: false, required: { ...pre.required, name: false } }));
-    }
-  }
-
-  function check_lastName(data: string) {
-    if (data === "" || !validateName(data)) {
-      setError(pre => ({ ...pre, last_name: true, required: { ...pre.required, last_name: true } }));
-    } else {
-      setError(pre => ({ ...pre, last_name: false, required: { ...pre.required, last_name: false } }));
     }
   }
 
@@ -173,7 +153,7 @@ const Signup: React.FC = () => {
 
       var response = await dispatch(signupUserData({
         name: data.name,
-        last_name: data.last_name,
+        role_id: data.role_id,
         email: data.email,
         password: data.password,
         department: "IT",
@@ -184,13 +164,11 @@ const Signup: React.FC = () => {
       if (response.payload) {
         showNotification("Registered successfully", "success");
         setData(initStage);
-        navigate('/auth/login');
       }
     } catch (error: any) {
       console.log('error: ', error);
       if (error.payload?.response?.status === 409) {
         showNotification(error.payload?.response?.data, "error");
-        console.log('error.payload?.response?.data: ', error.payload?.response?.data);
         setError(pre => ({ ...pre, conflict: true }))
       }
       if (error.payload?.response?.status === 400) {
@@ -203,9 +181,6 @@ const Signup: React.FC = () => {
 
   return (
     <Box className={styles.root}>
-      <Box className={styles.partition1}>
-        <img src={signup} alt='' className={styles.loginImg} />
-      </Box>
       {preview === 1 && <Box className={styles.partition2}>
         <Typography className={styles.title}> Sign Up</Typography>
         <FormGroup className={styles.inputWraper}>
@@ -316,20 +291,20 @@ const Signup: React.FC = () => {
       {preview === 2 && <Box className={styles.partition2}>
         <Typography className={styles.title}>Just Few More Details...</Typography>
         <FormGroup className={styles.inputWraper}>
-          <FormLabel className={styles.inputlabel}>First Name*</FormLabel>
+          <FormLabel className={styles.inputlabel}>Name*</FormLabel>
           <InputBase
             className={`${styles.inputBox} ${error.name ? styles.errorInput : ''}`}
             value={data?.name}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^[A-Za-z]*$/.test(value)) {
+              // if (/^[A-Za-z]*$/.test(value)) {
                 check_name(value);
                 setData((pre) => ({ ...pre, name: value }));
-              }
+              // }
             }}
             inputProps={{
               maxLength: 50,
-              title: 'Only alphabetic characters are allowed',
+              title: 'Only alphabetic characters are allowed'
             }}
           />
           {error.name && !data.name && <FormHelperText className={styles.FormHelperText}>Name is required</FormHelperText>}
@@ -337,24 +312,12 @@ const Signup: React.FC = () => {
         </FormGroup>
 
         <FormGroup className={styles.inputWraper}>
-          <FormLabel className={styles.inputlabel}>Last Name*</FormLabel>
-          <InputBase
-            className={`${styles.inputBox} ${error.last_name ? styles.errorInput : ''}`}
-            value={data?.last_name}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^[A-Za-z]*$/.test(value)) {
-                check_lastName(value);
-                setData((pre) => ({ ...pre, last_name: value }));
-              }
-            }}
-            inputProps={{
-              maxLength: 50, // Limit the maximum length of the input
-              title: 'Only alphabetic characters are allowed', // Tooltip when input is invalid
-            }}
-          />
-          {error.last_name && !data.last_name && <FormHelperText className={styles.FormHelperText}>Last Name is required</FormHelperText>}
-          {error.last_name && data.last_name && <FormHelperText className={styles.FormHelperText}>Invalid Last Name</FormHelperText>}        </FormGroup>
+          <FormLabel className={styles.inputlabel}>Role*</FormLabel>
+          <Select value={data.role_id} type='option' className={`${styles.inputBox} ${error.role_id ? styles.errorInput : ''}`} onChange={(e) => { setData((pre) => ({ ...pre, role_id: e.target.value as string })) }}>
+            {roles.map((item) => <MenuItem key={item.uuid} value={item.uuid} >{item.title}</MenuItem>)}
+          </Select>
+          {error.role_id && !data.role_id && <FormHelperText className={styles.FormHelperText}>Last Name is required</FormHelperText>}
+          {error.role_id && data.role_id && <FormHelperText className={styles.FormHelperText}>Invalid Last Name</FormHelperText>}        </FormGroup>
 
 
         <FormGroup className={styles.inputWraper}>
@@ -377,7 +340,7 @@ const Signup: React.FC = () => {
         </FormGroup>
         <Box className={styles.btnsWrap}>
           <Button className={`${styles.signInBtn} ${styles.prevBtn}`} onClick={() => { setPreview(1) }}> Previous</Button>
-          <Button className={styles.signInBtn} onClick={HandleSignup} disabled={(data.name.length === 0 || data.last_name.length === 0 || !(data.username.length >= 6))} > Sign up</Button>
+          <Button className={styles.signInBtn} onClick={HandleSignup} disabled={(data.name.length === 0 || data.role_id.length === 0 || !(data.username.length >= 6))} > Sign up</Button>
         </Box>
       </Box>}
     </Box>

@@ -52,7 +52,8 @@ exports.login = async ({ email, password }) => {
       criteria: { email, password },
       options: { transaction },
     });
-    return await send_OTP({ email, purpose: "login", user });
+    await send_OTP({ email, purpose: "login", user });
+    return { message: "OTP Sent Successfully" };
   });
 };
 
@@ -87,7 +88,6 @@ exports.forgot_password = async ({ email }) => {
       },
       options: { transaction },
     });
-    console.log(new Date(Date.now() + 1000 * 60 * 60 * 2), "fsadgdfdmdajhfuydsfudbfda", new Date(Date.now()));
     const token = verification_log.uuid;
     const client = process.env.CLIENT_URL;
     await mail_service.mail_reset_link({
@@ -126,11 +126,11 @@ exports.reset_password = async ({ password }, { token }) => {
   const resp = await user_repository.handleManagedTransaction(async transaction => {
     if (!token) throw new bad_request("Token Required");
     if (!password) throw new bad_request("Password Required");
-    const verification_log = await verification_logs_repository.findOne({
+    const verification_log = JSON.parse(JSON.stringify(await verification_logs_repository.findOne({
       criteria: { uuid: token, used_at: null },
       options: { transaction },
       include: [{ model: User, as: "user_details" }],
-    });
+    })));
     if (!verification_log) throw new bad_request("Token Invalid!");
     if (verification_log.expires_at < new Date()) throw new bad_request("Token Expired!");
     const user = verification_log.user_details;
@@ -139,7 +139,7 @@ exports.reset_password = async ({ password }, { token }) => {
     if (user.status !== "active") throw new bad_request("User is not found!");
 
     const updated_user = await user_repository.findOne({
-      criteria: { uuid: user_data.uuid },
+      criteria: { uuid: user.uuid },
       options: { transaction },
     });
     updated_user.password = password;
@@ -150,6 +150,7 @@ exports.reset_password = async ({ password }, { token }) => {
         options: { transaction },
       });
     }
+    await verification_logs_repository.update({criteria: {uuid: token}, payload: {used_at: new Date()}, options: {transaction}});
     return user;
   });
   return await gen_response_with_token(resp);

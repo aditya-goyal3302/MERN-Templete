@@ -10,7 +10,7 @@ exports.get_all_user_for_admin = async (req) => {
 
 exports.get_user_data = async req => {
   const { user_id } = req.body.user;
-  const response = await user_repository.findUser({ uuid: user_id });
+  const response = await user_repository.findUser({ criteria: { uuid: user_id } });
   if (!response) new unauthorized("User not found");
   delete response.password;
   delete response.role_id;
@@ -61,7 +61,7 @@ exports.set_user_inactive = async req => {
 };
 
 exports.set_user_active = async req => {
-  const { user:{ user_id } } = req.body;
+  const { user: { user_id } } = req.body;
   const response = await user_repository.update({
     criteria: { uuid: user_id },
     payload: { status: "active" },
@@ -80,7 +80,7 @@ exports.set_user_image = async req => {
   const { image } = req.files;
   const response = await user_repository.update({
     criteria: { uuid: user_id },
-    payload: { image: image[0].path },
+    payload: { image: image[0].destination + image[0].filename },
     options: { returning: true, plain: true }
   });
   if (!response[1]) new unauthorized("User not found");

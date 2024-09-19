@@ -23,13 +23,10 @@ const UserSettings = () => {
     const handleSave = async () => {
         if (tab === 1) {
             const data = {
-                date_of_birth: reqData.date_of_birth,
-                address: reqData.address,
                 city: reqData.city,
                 country: reqData.country,
                 state: reqData.state,
-                street: reqData.street,
-                phone: reqData.phone,
+                phone_no: reqData.phone,
                 pincode: reqData.pincode
             }
             const resp: any = await dispatch(updateUserAction({ data: data }))
@@ -58,14 +55,11 @@ const UserSettings = () => {
             </Box>
             <Box className={styles.main}>
                 <Box className={styles.mainWrapper}>
-                    {/* <Box className={styles.sideBar}>
+                    <Box className={styles.sideBar}>
                         <SideNavBtn title='Personal Information' active={tab === 1} img={PIpng} onClick={() => { setTab(1) }} />
-                        <SideNavBtn title='Security' active={tab === 2} img={Spng} onClick={() => { setTab(2) }} /> */}
-                    {/* <SideNavBtn title='Billing & Tax' active={tab === 3} img={Bntpng} onClick={() => { setTab(3) }} /> */}
-                    {/* <SideNavBtn title='Plans' active={tab === 4} img={Ppng} onClick={() => { setTab(4) }} /> */}
-                    {/* <SideNavBtn title='Linked Shops' active={tab === 5} img={Lpng} onClick={() => { setTab(5) }} /> */}
-                    {/* </Box>
-                    <Divider className={styles.divider} orientation='vertical' /> */}
+                        <SideNavBtn title='Security' active={tab === 2} img={Spng} onClick={() => { setTab(2) }} />
+                    </Box>
+                    <Divider className={styles.divider} orientation='vertical' />
                     <Box className={styles.children}>
                         {tab === 1 && <PersonalInfo setReqData={setReqData} />}
                     </Box>

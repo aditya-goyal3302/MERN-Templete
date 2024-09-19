@@ -13,7 +13,11 @@ class UserRepository extends BaseRepository {
     }
   ]
   async findUser({ criteria, options }) {
-    const resp = await this.findOne({ criteria, options: { attributes: { exclude: ["password", "id"] }, ...options }, include: this.include });
+    const resp = await this.findOne({
+      criteria,
+      options: { attributes: { exclude: ["password", "id"] }, ...options },
+      include: this.include
+    });
     return resp.toJSON()
   }
 
