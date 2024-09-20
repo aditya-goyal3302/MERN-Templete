@@ -68,7 +68,7 @@ exports.verify_login = async ({ email, otp }) => {
 
     return gen_response_with_token(verification.user_details);
   });
-}
+};
 
 exports.forgot_password = async ({ email }) => {
   return await user_repository.handleManagedTransaction(async transaction => {
@@ -126,11 +126,15 @@ exports.reset_password = async ({ password }, { token }) => {
   const resp = await user_repository.handleManagedTransaction(async transaction => {
     if (!token) throw new bad_request("Token Required");
     if (!password) throw new bad_request("Password Required");
-    const verification_log = JSON.parse(JSON.stringify(await verification_logs_repository.findOne({
-      criteria: { uuid: token, used_at: null },
-      options: { transaction },
-      include: [{ model: User, as: "user_details" }],
-    })));
+    const verification_log = JSON.parse(
+      JSON.stringify(
+        await verification_logs_repository.findOne({
+          criteria: { uuid: token, used_at: null },
+          options: { transaction },
+          include: [{ model: User, as: "user_details" }],
+        })
+      )
+    );
     if (!verification_log) throw new bad_request("Token Invalid!");
     if (verification_log.expires_at < new Date()) throw new bad_request("Token Expired!");
     const user = verification_log.user_details;
@@ -150,22 +154,31 @@ exports.reset_password = async ({ password }, { token }) => {
         options: { transaction },
       });
     }
-    await verification_logs_repository.update({criteria: {uuid: token}, payload: {used_at: new Date()}, options: {transaction}});
+    await verification_logs_repository.update({
+      criteria: { uuid: token },
+      payload: { used_at: new Date() },
+      options: { transaction },
+    });
     return user;
   });
   return await gen_response_with_token(resp);
 };
 
 exports.change_password = async ({ user, old_password, new_password }) => {
+  console.log("user: ", user);
   const resp = await user_repository.handleManagedTransaction(async transaction => {
     if (!old_password) throw new bad_request("Old Password Required");
     if (!new_password) throw new bad_request("New Password Required");
 
-    const user_data = await user_repository.find_and_compare_password({
-      criteria: { email: user.email, password: old_password },
-      options: { transaction },
+    let user_data = await user_repository.findOne({
+      criteria: { uuid: user.user_id },
+      options: { transaction, plain: true },
     });
-    if (!user_data) throw new bad_request("Incorrect Old Password ");
+    console.log("user_data: ", user_data);
+    const check = await user_data.comparePassword(old_password);
+    if (!user || !user.status === "active") throw new bad_request("Invalid email or password");
+    if (!check) throw new bad_request("Invalid email or password");
+    user_data = user_data.toJSON();
     const updated_user = await user_repository.findOne({
       criteria: { uuid: user_data.uuid },
       options: { transaction },

@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
       user.password = hashedPassword;
     }
   });
-  
+
   User.prototype.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
   };

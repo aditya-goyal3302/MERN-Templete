@@ -56,7 +56,6 @@ const UserSlice = createSlice({
         builder
             .addCase(LoginApi.fulfilled, (state, action) => {
                 state.token = action.payload?.token || ''
-                localStorage.setItem('token', state?.token);
                 state.user = { ...state.user, ...action.payload?.data }
                 state.isLoading = false
                 state.isLogedin = !!state.token
@@ -74,7 +73,6 @@ const UserSlice = createSlice({
             })
             .addCase(VerifyLoginApi.fulfilled, (state, action) => {
                 state.token = action.payload.token || ''
-                localStorage.setItem('token', state.token);
                 state.user = { ...state.user, ...action.payload.data }
                 state.isLoading = false
                 state.isLogedin = !!action.payload.token

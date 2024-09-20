@@ -10,28 +10,28 @@ class UserRepository extends BaseRepository {
     {
       model: Acl,
       as: "role_data",
-    }
-  ]
+    },
+  ];
   async findUser({ criteria, options }) {
     const resp = await this.findOne({
       criteria,
       options: { attributes: { exclude: ["password", "id"] }, ...options },
-      include: this.include
+      include: this.include,
     });
-    return resp.toJSON()
+    return resp.toJSON();
   }
 
-  async findAllUser({ order = "DESC", limit, offset, }) {
+  async findAllUser({ order = "DESC", limit, offset }) {
     const resp = await this.findAll({ include: this.include, order, limit, offset });
-    return resp.toJSON()
+    return resp.toJSON();
   }
 
   async find_and_compare_password({ criteria: { email, password }, options = {} }) {
-    const user = await this.findOne({ criteria: { email } });
+    const user = await this.findOne({ criteria: { email }, options: { ...options, plain: true } });
     if (!user || !user.status === "active") throw new bad_request("Invalid email or password");
     const check = await user.comparePassword(password);
     if (!check) throw new bad_request("Invalid email or password");
-    return user;
+    return user.toJSON();
   }
 }
 
